@@ -7,11 +7,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
 import Admin from "@/pages/Admin";
+import News from "@/pages/News";
+import NewsDetail from "@/pages/NewsDetail";
 
 function Router() {
   return (
     <Switch>
       <Route path="/xadminx" component={Admin} />
+      <Route path="/noticias/:id" component={NewsDetail} />
+      <Route path="/noticias" component={News} />
       <Route path="/" component={Landing} />
       <Route component={NotFound} />
     </Switch>

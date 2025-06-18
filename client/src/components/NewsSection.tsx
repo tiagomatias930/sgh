@@ -1,30 +1,17 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, ArrowRight, FileText } from "lucide-react";
-import NewsModal from "@/components/NewsModal";
 import type { Post } from "@shared/schema";
 
 export default function NewsSection() {
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const { data: posts, isLoading } = useQuery({
+  const { data: posts, isLoading } = useQuery<Post[]>({
     queryKey: ["/api/posts"],
     retry: false,
   });
-
-  const openNewsModal = (post: Post) => {
-    setSelectedPost(post);
-    setIsModalOpen(true);
-  };
-
-  const closeNewsModal = () => {
-    setIsModalOpen(false);
-    setSelectedPost(null);
-  };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -60,7 +47,7 @@ export default function NewsSection() {
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-blue"></div>
           </div>
-        ) : posts && posts.length > 0 ? (
+        ) : Array.isArray(posts) && posts.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
               {posts.slice(0, 6).map((post: Post) => (
@@ -94,22 +81,25 @@ export default function NewsSection() {
                     <p className="text-gray-600 mb-4 line-clamp-3">
                       {post.excerpt}
                     </p>
-                    <Button 
-                      variant="link" 
-                      className="text-medical-blue hover:text-blue-700 p-0"
-                      onClick={() => openNewsModal(post)}
-                    >
-                      Ler mais <ArrowRight className="ml-1 h-4 w-4" />
-                    </Button>
+                    <Link href={`/noticias/${post.id}`}>
+                      <Button 
+                        variant="link" 
+                        className="text-medical-blue hover:text-blue-700 p-0"
+                      >
+                        Ler mais <ArrowRight className="ml-1 h-4 w-4" />
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
             <div className="text-center">
-              <Button className="bg-medical-blue hover:bg-blue-700 px-8 py-3">
-                Ver Todas as Notícias
-              </Button>
+              <Link href="/noticias">
+                <Button className="bg-medical-blue hover:bg-blue-700 px-8 py-3">
+                  Ver Todas as Notícias
+                </Button>
+              </Link>
             </div>
           </>
         ) : (
@@ -122,11 +112,7 @@ export default function NewsSection() {
           </div>
         )}
 
-        <NewsModal
-          post={selectedPost}
-          isOpen={isModalOpen}
-          onClose={closeNewsModal}
-        />
+
       </div>
     </section>
   );

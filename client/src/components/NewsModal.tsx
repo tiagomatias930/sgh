@@ -1,5 +1,5 @@
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -59,6 +59,9 @@ export default function NewsModal({ post, isOpen, onClose }: NewsModalProps) {
               <DialogTitle className="text-2xl font-bold text-gray-900 leading-tight">
                 {post.title}
               </DialogTitle>
+              <DialogDescription className="sr-only">
+                {post.excerpt}
+              </DialogDescription>
             </div>
             <Button
               variant="ghost"

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Hospital, Menu, Shield, LogOut } from "lucide-react";
@@ -10,21 +10,31 @@ interface NavigationProps {
 
 export default function Navigation({ showAdmin = false }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [location] = useLocation();
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+  const handleNavigation = (href: string, isSection: boolean) => {
+    if (isSection) {
+      // Se estivermos na página inicial, fazer scroll para a seção
+      if (location === '/') {
+        const sectionId = href.slice(1);
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        // Se não estivermos na página inicial, navegar para a página inicial com a seção
+        window.location.href = `/${href}`;
+      }
     }
     setIsOpen(false);
   };
 
   const navItems = [
-    { href: "#inicio", label: "Início" },
-    { href: "#noticias", label: "Notícias" },
-    { href: "#sobre", label: "Sobre Nós" },
-    { href: "#servicos", label: "Serviços" },
-    { href: "#contacto", label: "Contacto" },
+    { href: "#inicio", label: "Início", isSection: true },
+    { href: "/noticias", label: "Notícias", isSection: false },
+    { href: "#sobre", label: "Sobre Nós", isSection: true },
+    { href: "#servicos", label: "Serviços", isSection: true },
+    { href: "#contacto", label: "Contacto", isSection: true },
   ];
 
   return (
@@ -33,7 +43,7 @@ export default function Navigation({ showAdmin = false }: NavigationProps) {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <h1 className="text-xl font-bold text-blue-600 flex items-center">
+          <h1 className="text-xl font-bold text-blue-600 flex items-center">
               <img src="https://raw.githubusercontent.com/tiagomatias930/sgh/main/transferir__1_-removebg-preview.png" alt="logoHospital" className="mr-2 h-7 w-7 mt-1" />
                 Hospital Pediátrico de Luanda
               </h1>
@@ -44,39 +54,23 @@ export default function Navigation({ showAdmin = false }: NavigationProps) {
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
               {navItems.map((item) => (
-                <button
-                  key={item.href}
-                  onClick={() => scrollToSection(item.href.slice(1))}
-                  className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  {item.label}
-                </button>
-              ))}
-              {/*{showAdmin ? (
-                <>
-                  <Link href="/admin">
-                    <Button className="bg-blue-600 hover:bg-blue-700">
-                      <Shield className="mr-1 h-4 w-4" />
-                      Admin
-                    </Button>
-                  </Link>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => window.location.href = "/api/logout"}
+                item.isSection ? (
+                  <button
+                    key={item.href}
+                    onClick={() => handleNavigation(item.href, true)}
+                    className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                   >
-                    <LogOut className="mr-1 h-4 w-4" />
-                    Sair
-                  </Button>
-                </>
-              ) : (
-                <Button 
-                  className="bg-blue-600 hover:bg-blue-700"
-                  onClick={() => window.location.href = "/api/login"}
-                >
-                  <Shield className="mr-1 h-4 w-4" />
-                  Admin
-                </Button>
-              )}*/}
+                    {item.label}
+                  </button>
+                ) : (
+                  <Link key={item.href} href={item.href}>
+                    <button className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                      {item.label}
+                    </button>
+                  </Link>
+                )
+              ))}
+              
             </div>
           </div>
 
@@ -91,14 +85,26 @@ export default function Navigation({ showAdmin = false }: NavigationProps) {
               <SheetContent side="right" className="w-80">
                 <div className="flex flex-col space-y-4 mt-6">
                   {navItems.map((item) => (
-                    <button
-                      key={item.href}
-                      onClick={() => scrollToSection(item.href.slice(1))}
-                      className="text-left text-gray-600 hover:text-medical-blue px-3 py-2 rounded-md text-base font-medium transition-colors"
-                    >
-                      {item.label}
-                    </button>
+                    item.isSection ? (
+                      <button
+                        key={item.href}
+                        onClick={() => handleNavigation(item.href, true)}
+                        className="text-left text-gray-600 hover:text-medical-blue px-3 py-2 rounded-md text-base font-medium transition-colors"
+                      >
+                        {item.label}
+                      </button>
+                    ) : (
+                      <Link key={item.href} href={item.href}>
+                        <button
+                          onClick={() => setIsOpen(false)}
+                          className="text-left text-gray-600 hover:text-medical-blue px-3 py-2 rounded-md text-base font-medium transition-colors w-full"
+                        >
+                          {item.label}
+                        </button>
+                      </Link>
+                    )
                   ))}
+                  
                 </div>
               </SheetContent>
             </Sheet>

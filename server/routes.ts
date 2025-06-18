@@ -152,7 +152,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/verify", async (req, res) => {
     const { password } = req.body;
     
-    if (password === "genio123") {
+    if (password === "admin123") {
       res.json({ success: true });
     } else {
       res.status(401).json({ success: false, message: "Senha incorreta" });
