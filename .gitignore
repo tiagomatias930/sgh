@@ -1,0 +1,37 @@
+node_modules
+dist
+.DS_Store
+server/public
+vite.config.ts.*
+*.tar.gz
+
+
+
+
+
+o problema de fazer atualizar e eliminar e que nao esta se usar o mesmo id na base de dados e aqui no app. para resolver no moneto de eliminar um dados ele deve pegar o id que esta na base de dados para poder eliminar ou atualizar
+
+rest-express@1.0.0 dev
+11:53:21 PM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+npx update-browserslist-db@latest
+Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Google Apps Script database initialized successfully
+11:53:32 PM [express] GET /api/posts 200 in 7909ms :: [{"id":4,"title":"ola","content":"a","excerpt":…
+11:53:41 PM [express] GET /api/posts 200 in 1898ms :: [{"id":4,"title":"ola","content":"a","excerpt":…
+11:53:45 PM [express] POST /api/admin/verify 401 in 1ms :: {"success":false,"message":"Senha incorret…
+11:53:51 PM [express] POST /api/admin/verify 200 in 1ms :: {"success":true}
+11:53:53 PM [express] GET /api/admin/posts 200 in 1788ms :: [{"id":4,"title":"ola","content":"a","exc…
+Attempting to delete post with ID: 4
+Delete result: { deleted: false }
+Error deleting post in Google Apps Script: Error: Post could not be deleted
+at GoogleAppsScriptStorage.deletePost (/home/runner/workspace/server/storage.ts:366:15)
+at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+at async <anonymous> (/home/runner/workspace/server/routes.ts:124:7)
+Error deleting post: Error: Post could not be deleted
+at GoogleAppsScriptStorage.deletePost (/home/runner/workspace/server/storage.ts:366:15)
+at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+at async <anonymous> (/home/runner/workspace/server/routes.ts:124:7)
+11:54:02 PM [express] DELETE /api/posts/4 500 in 2721ms :: {"message":"Failed to delete post"}
+11:54:06 PM [express] POST /api/admin/verify 200 in 1ms :: {"success":true}
+11:54:08 PM [express] GET /api/admin/posts 200 in 1800ms :: [{"id":4,"title":"ola","content":"a","exc…
