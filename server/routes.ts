@@ -29,7 +29,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid post ID" });
       }
 
-      const post = await storage.getPostById(id);
+      const post = await storage.getPostById(String(id));// lina 32
       if (!post) {
         return res.status(404).json({ message: "Post not found" });
       }
