@@ -29,7 +29,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid post ID" });
       }
 
-      const post = await storage.getPostById(String(id));// lina 32
+      const post = await storage.getPostById(id);
       if (!post) {
         return res.status(404).json({ message: "Post not found" });
       }
@@ -152,7 +152,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/verify", async (req, res) => {
     const { password } = req.body;
     
-    if (password === "admin123") {
+    if (password === "genio123") {
       res.json({ success: true });
     } else {
       res.status(401).json({ success: false, message: "Senha incorreta" });

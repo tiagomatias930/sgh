@@ -1,138 +1,110 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, ArrowRight, FileText } from "lucide-react";
-import NewsModal from "@/components/NewsModal";
-import type { Post } from "@shared/schema";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Hospital, Menu, Shield, LogOut } from "lucide-react";
 
-export default function NewsSection() {
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+interface NavigationProps {
+  showAdmin?: boolean;
+}
 
-  const { data: posts, isLoading } = useQuery<Post[]>({ // Add type annotation
-    queryKey: ["/api/posts"],
-    retry: false,
-    queryFn: async () => {
-      const response = await fetch("/api/posts");
-      if (!response.ok) throw new Error("Failed to fetch posts");
-      return response.json();
-    },
-  });
+export default function Navigation({ showAdmin = false }: NavigationProps) {
+  const [isOpen, setIsOpen] = useState(false);
 
-  const openNewsModal = (post: Post) => {
-    setSelectedPost(post);
-    setIsModalOpen(true);
-  };
-
-  const closeNewsModal = () => {
-    setIsModalOpen(false);
-    setSelectedPost(null);
-  };
-
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case "campanha": return "bg-medical-blue text-white";
-      case "tecnologia": return "bg-success-green text-white";
-      case "evento": return "bg-purple-500 text-white";
-      case "noticia": return "bg-orange-500 text-white";
-      default: return "bg-gray-500 text-white";
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
     }
+    setIsOpen(false);
   };
 
-  const getCategoryLabel = (category: string) => {
-    switch (category) {
-      case "campanha": return "Campanha";
-      case "tecnologia": return "Tecnologia";
-      case "evento": return "Evento";
-      case "noticia": return "Notícia";
-      default: return category;
-    }
-  };
+  const navItems = [
+    { href: "#inicio", label: "Início" },
+    { href: "#noticias", label: "Notícias" },
+    { href: "#sobre", label: "Sobre Nós" },
+    { href: "#servicos", label: "Serviços" },
+    { href: "#contacto", label: "Contacto" },
+  ];
 
   return (
-    <section id="noticias" className="py-20 bg-white">
+    <nav className="bg-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Notícias e Atualizações</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Mantenha-se informado sobre as últimas novidades, campanhas de saúde e eventos do nosso hospital.
-          </p>
-        </div>
-
-        {isLoading ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-blue"></div>
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <h1 className="text-xl font-bold text-blue-600 flex items-center">
+              <img src="https://raw.githubusercontent.com/tiagomatias930/sgh/main/transferir__1_-removebg-preview.png" alt="logoHospital" className="mr-2 h-7 w-7 mt-1" />
+                Hospital Pediátrico de Luanda
+              </h1>
+            </div>
           </div>
-        ) : posts && posts.length > 0 ? ( // Line 63
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              {posts.slice(0, 6).map((post: Post) => (
-                <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-shadow">
-                  <div className="relative">
-                    {post.imageUrl ? (
-                      <img 
-                        src={post.imageUrl} 
-                        alt={post.title}
-                        className="w-full h-48 object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-48 bg-gradient-to-br from-medical-blue to-light-blue flex items-center justify-center">
-                        <FileText className="h-12 w-12 text-white opacity-50" />
-                      </div>
-                    )}
-                    <div className="absolute top-4 left-4">
-                      <Badge className={getCategoryColor(post.category)}>
-                        {getCategoryLabel(post.category)}
-                      </Badge>
-                    </div>
-                  </div>
-                  <CardContent className="p-6">
-                    <div className="flex items-center text-sm text-gray-500 mb-2">
-                      <Calendar className="mr-2 h-4 w-4" />
-                      <span>{new Date(post.createdAt!).toLocaleDateString("pt-PT")}</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">
-                      {post.title}
-                    </h3>
-                    <p className="text-gray-600 mb-4 line-clamp-3">
-                      {post.excerpt}
-                    </p>
-                    <Button 
-                      variant="link" 
-                      className="text-medical-blue hover:text-blue-700 p-0"
-                      onClick={() => openNewsModal(post)}
-                    >
-                      Ler mais <ArrowRight className="ml-1 h-4 w-4" />
-                    </Button>
-                  </CardContent>
-                </Card>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:block">
+            <div className="ml-10 flex items-baseline space-x-4">
+              {navItems.map((item) => (
+                <button
+                  key={item.href}
+                  onClick={() => scrollToSection(item.href.slice(1))}
+                  className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  {item.label}
+                </button>
               ))}
+              {/*{showAdmin ? (
+                <>
+                  <Link href="/admin">
+                    <Button className="bg-blue-600 hover:bg-blue-700">
+                      <Shield className="mr-1 h-4 w-4" />
+                      Admin
+                    </Button>
+                  </Link>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => window.location.href = "/api/logout"}
+                  >
+                    <LogOut className="mr-1 h-4 w-4" />
+                    Sair
+                  </Button>
+                </>
+              ) : (
+                <Button 
+                  className="bg-blue-600 hover:bg-blue-700"
+                  onClick={() => window.location.href = "/api/login"}
+                >
+                  <Shield className="mr-1 h-4 w-4" />
+                  Admin
+                </Button>
+              )}*/}
             </div>
-
-            <div className="text-center">
-              <Button className="bg-medical-blue hover:bg-blue-700 px-8 py-3">
-                Ver Todas as Notícias
-              </Button>
-            </div>
-          </>
-        ) : (
-          <div className="text-center py-12">
-            <FileText className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma notícia disponível</h3>
-            <p className="text-gray-600">
-              Não há notícias publicadas no momento. Volte em breve para ver as últimas atualizações.
-            </p>
           </div>
-        )}
 
-        <NewsModal
-          post={selectedPost}
-          isOpen={isModalOpen}
-          onClose={closeNewsModal}
-        />
+          {/* Mobile Navigation */}
+          <div className="md:hidden">
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-80">
+                <div className="flex flex-col space-y-4 mt-6">
+                  {navItems.map((item) => (
+                    <button
+                      key={item.href}
+                      onClick={() => scrollToSection(item.href.slice(1))}
+                      className="text-left text-gray-600 hover:text-medical-blue px-3 py-2 rounded-md text-base font-medium transition-colors"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
       </div>
-    </section>
+    </nav>
   );
 }

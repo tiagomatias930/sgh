@@ -93,7 +93,7 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
           <div className="mt-4 text-sm text-gray-600 text-center">
             <p>Credenciais padrão:</p>
             <p>Usuário: admin</p>
-            <p>Senha: admin123</p>
+            <p>Senha: genio123</p>
           </div>
         </CardContent>
       </Card>
